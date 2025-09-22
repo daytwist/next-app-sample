@@ -4,9 +4,7 @@
     "build": "next build",
     "dev": "next dev --turbopack",
     "start": "next start",
-    "lint": "next lint",
-    "init-db": "node scripts/init-db.js",
-    "postbuild": "node scripts/init-db.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

@@ -5,7 +5,7 @@ import {
   InboxIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchCardData } from '@/app/lib/data';
+import { headers } from 'next/headers';
 
 const iconMap = {
   collected: BanknotesIcon,
@@ -15,12 +15,19 @@ const iconMap = {
 };
 
 export default async function CardWrapper() {
+  const hdrs = await headers();
+  const host = hdrs.get('host');
+  const protocol = process.env.VERCEL ? 'https' : 'http';
+  const base = `${protocol}://${host}`;
+  const cookie = hdrs.get('cookie') ?? '';
+  const res = await fetch(`${base}/api/cards`, { cache: 'no-store', headers: { cookie } });
+  if (!res.ok) throw new Error('Failed to load cards');
   const {
     totalPaidInvoices,
     totalPendingInvoices,
     numberOfInvoices,
     numberOfCustomers,
-  } = await fetchCardData();
+  } = await res.json();
 
   return (
     <>

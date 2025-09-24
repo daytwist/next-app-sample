@@ -1,6 +1,7 @@
-import postgres from 'postgres';
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+import 'server-only';
+import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import { sql } from '@/app/lib/db';
 
 async function listInvoices() {
 	const data = await sql`
@@ -15,8 +16,12 @@ async function listInvoices() {
 
 export async function GET() {
   try {
-    return Response.json(await listInvoices());
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const allow = process.env.NODE_ENV !== 'production' || process.env.ALLOW_DEBUG_QUERY === '1';
+    if (!allow) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    return NextResponse.json(await listInvoices());
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to run debug query' }, { status: 500 });
   }
 }

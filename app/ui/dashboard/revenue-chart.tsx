@@ -2,7 +2,7 @@ import { generateYAxis } from '@/app/lib/utils';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { Revenue } from '@/app/lib/definitions';
-import { fetchRevenue } from '@/app/lib/data';
+import { headers } from 'next/headers';
 
 // This component is representational only.
 // For data visualization UI, check out:
@@ -11,7 +11,14 @@ import { fetchRevenue } from '@/app/lib/data';
 // https://airbnb.io/visx/
 
 export default async function RevenueChart() {
-  const revenue = await fetchRevenue();
+  const hdrs = await headers();
+  const host = hdrs.get('host');
+  const protocol = process.env.VERCEL ? 'https' : 'http';
+  const base = `${protocol}://${host}`;
+  const cookie = hdrs.get('cookie') ?? '';
+  const res = await fetch(`${base}/api/revenue`, { cache: 'no-store', headers: { cookie } });
+  if (!res.ok) throw new Error('Failed to load revenue');
+  const { data: revenue } = (await res.json()) as { data: Revenue[] };
   const chartHeight = 350;
   // NOTE: Uncomment this code in Chapter 7
 

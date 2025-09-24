@@ -5,8 +5,9 @@ import { CreateInvoice } from '@/app/ui/invoices/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchInvoicesPages } from '@/app/lib/data';
+import 'server-only';
 import { Metadata } from 'next';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Invoices',
@@ -21,7 +22,14 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchInvoicesPages(query);
+  const hdrs = await headers();
+  const host = hdrs.get('host');
+  const protocol = process.env.VERCEL ? 'https' : 'http';
+  const base = `${protocol}://${host}`;
+  const cookie = hdrs.get('cookie') ?? '';
+  const res = await fetch(`${base}/api/invoices?q=${encodeURIComponent(query)}&page=${currentPage}`, { cache: 'no-store', headers: { cookie } });
+  if (!res.ok) throw new Error('Failed to load invoices pagination');
+  const { totalPages } = await res.json();
 
   return (
     <div className="w-full">

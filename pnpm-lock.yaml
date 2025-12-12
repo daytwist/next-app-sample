@@ -24,11 +24,11 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       next:
-        specifier: 15.6.0-canary.58
-        version: 15.6.0-canary.58(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: 15.6.0-canary.60
+        version: 15.6.0-canary.60(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-auth:
         specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@15.6.0-canary.58(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 5.0.0-beta.28(next@15.6.0-canary.60(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       postcss:
         specifier: 8.5.1
         version: 8.5.1
@@ -334,8 +334,8 @@ packages:
   '@napi-rs/wasm-runtime@0.2.11':
     resolution: {integrity: sha512-9DPkXtvHydrcOsopiYpUgPHpmj0HWZKMUnL2dZqpvC42lsratuBG06V5ipyno0fUek5VlFsNQ+AcFATSrJXgMA==}
 
-  '@next/env@15.6.0-canary.58':
-    resolution: {integrity: sha512-JyYhiCaCYgLfs3a195cncgUfyATTvtIpK2L9wpka4JdJ/Cn58LxO2WRQysmWYXWjuCTgE9n4vjWDAJcWmRisiw==}
+  '@next/env@15.6.0-canary.60':
+    resolution: {integrity: sha512-VVoy8NpkI2ngEr3RsD8jzum8SbXisObkvcCMBJeiWRSMOtACIm6kbnTYjgLWeGEwHHKsVBdeJpnf558rF6ktbw==}
 
   '@next/eslint-plugin-next@15.3.3':
     resolution: {integrity: sha512-VKZJEiEdpKkfBmcokGjHu0vGDG+8CehGs90tBEy/IDoDDKGngeyIStt2MmE5FYNyU9BhgR7tybNWTAJY/30u+Q==}
@@ -1519,8 +1519,8 @@ packages:
       nodemailer:
         optional: true
 
-  next@15.6.0-canary.58:
-    resolution: {integrity: sha512-crPQo+AxBCmmBFMpDLbFg1uH+ArvrPNkvsviM60wrlzmhNuQyIOQ0tHL7Y10BVlxqtM7esMDQnepKT1XJBqYBQ==}
+  next@15.6.0-canary.60:
+    resolution: {integrity: sha512-E5gKHda+vdACO+/Bv53V3qcMrhmhH8UuctFSbNeCvnIfPoWPEUMHCB+hok7qxRlKwclXoQ5SUgUdgi6Ayzu5uA==}
     engines: {node: '>=20.9.0'}
     hasBin: true
     peerDependencies:
@@ -2372,7 +2372,7 @@ snapshots:
       '@tybys/wasm-util': 0.9.0
     optional: true
 
-  '@next/env@15.6.0-canary.58': {}
+  '@next/env@15.6.0-canary.60': {}
 
   '@next/eslint-plugin-next@15.3.3':
     dependencies:
@@ -3684,15 +3684,15 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@5.0.0-beta.28(next@15.6.0-canary.58(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
+  next-auth@5.0.0-beta.28(next@15.6.0-canary.60(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
     dependencies:
       '@auth/core': 0.39.1
-      next: 15.6.0-canary.58(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.6.0-canary.60(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
-  next@15.6.0-canary.58(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  next@15.6.0-canary.60(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
-      '@next/env': 15.6.0-canary.58
+      '@next/env': 15.6.0-canary.60
       '@swc/helpers': 0.5.15
       caniuse-lite: 1.0.30001718
       postcss: 8.4.31

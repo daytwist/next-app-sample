@@ -2,10 +2,19 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLatestInvoices } from '@/app/lib/data';
+import { formatCurrency } from '@/app/lib/utils';
+import type { LatestInvoiceRaw } from '@/app/lib/definitions';
+import { headers } from 'next/headers';
 
 export default async function LatestInvoices() {
-  const latestInvoices = await fetchLatestInvoices();
+  const hdrs = await headers();
+  const host = hdrs.get('host');
+  const protocol = process.env.VERCEL ? 'https' : 'http';
+  const base = `${protocol}://${host}`;
+  const cookie = hdrs.get('cookie') ?? '';
+  const res = await fetch(`${base}/api/invoices/latest`, { cache: 'no-store', headers: { cookie } });
+  if (!res.ok) throw new Error('Failed to load latest invoices');
+  const { data: latestInvoices } = (await res.json()) as { data: LatestInvoiceRaw[] };
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -15,7 +24,7 @@ export default async function LatestInvoices() {
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
         <div className="bg-white px-6">
-          {latestInvoices.map((invoice, i) => {
+          {latestInvoices.map((invoice: LatestInvoiceRaw, i: number) => {
             return (
               <div
                 key={invoice.id}
@@ -43,10 +52,8 @@ export default async function LatestInvoices() {
                     </p>
                   </div>
                 </div>
-                <p
-                  className={`${lusitana.className} truncate text-sm font-medium md:text-base`}
-                >
-                  {invoice.amount}
+                <p className={`${lusitana.className} truncate text-sm font-medium md:text-base`}>
+                  {formatCurrency(invoice.amount)}
                 </p>
               </div>
             );

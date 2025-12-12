@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useState } from 'react';
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
@@ -10,14 +10,49 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createInvoice, State } from '@/app/lib/actions';
+import { useRouter } from 'next/navigation';
+
+type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
-  const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createInvoice, initialState);
+  const router = useRouter();
+  const [state, setState] = useState<State>({ message: null, errors: {} });
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      customerId: String(fd.get('customerId') || ''),
+      amount: Number(fd.get('amount') || 0),
+      status: String(fd.get('status') || ''),
+    };
+    const res = await fetch('/api/invoices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.status === 400) {
+      const body = await res.json();
+      setState({ errors: body.errors?.fieldErrors, message: 'Missing Fields. Failed to Create Invoice.' });
+      return;
+    }
+    if (!res.ok) {
+      setState({ message: 'Database Error: Failed to Create Invoice.' });
+      return;
+    }
+    router.push('/dashboard/invoices');
+    router.refresh();
+  };
 
   return (
-    <form action={formAction}>
+    <form onSubmit={onSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">

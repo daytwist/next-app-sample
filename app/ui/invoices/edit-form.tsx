@@ -9,8 +9,17 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
-import { updateInvoice, State } from '@/app/lib/actions';
-import { useActionState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
 
 export default function EditInvoiceForm({
   invoice,
@@ -19,12 +28,37 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
-  const initialState: State = { message: null, errors: {} };
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  const router = useRouter();
+  const [state, setState] = useState<State>({ message: null, errors: {} });
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      customerId: String(fd.get('customerId') || ''),
+      amount: Number(fd.get('amount') || 0),
+      status: String(fd.get('status') || ''),
+    };
+    const res = await fetch(`/api/invoices/${invoice.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.status === 400) {
+      const body = await res.json();
+      setState({ errors: body.errors?.fieldErrors, message: 'Missing Fields. Failed to Update Invoice.' });
+      return;
+    }
+    if (!res.ok) {
+      setState({ message: 'Database Error: Failed to Update Invoice.' });
+      return;
+    }
+    router.push('/dashboard/invoices');
+    router.refresh();
+  };
 
   return (
-    <form action={formAction}>
+    <form onSubmit={onSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
